@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { loginAction } from '../api/auth.api'
 import { setSecureItem } from '../utils/secureStorage.utils'
 import ReCAPTCHA from 'react-google-recaptcha'
-import { useState } from "react"
+import { useState, useRef } from "react"
 import Visibility24pxGray300Icon from '../assets/images/svg/visibility_24px_gray_300.svg'
 import VisibilityOff24pxGray300Icon from '../assets/images/svg/visibility_off_24px_gray_300.svg'
 import { Link } from 'react-router-dom'
@@ -18,6 +18,7 @@ function Login() {
   const navigate = useNavigate()
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false)
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null)
 
   const handleTogglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible)
@@ -39,14 +40,16 @@ function Login() {
       navigate('/')
     } catch (error) {
       console.error('Login failed:', error)
+      recaptchaRef.current?.reset()
+      setCaptchaToken(null)
     }
   }
 
   return (
     <div className="w-full h-full min-h-screen py-30 flex flex-col items-center justify-start bg-linear-to-t from-sky-500 to-indigo-500 p-6.25">
-      <form className="w-full h-auto p-4 max-w-150 bg-white rounded-xl shadow-lg border border-gray-200 gap-4 flex flex-col items-start justify-start" onSubmit={handleSubmit(onSubmit)}>
+      <form className="w-full h-auto p-4 max-w-150 bg-white rounded-xl shadow-lg border border-gray-200 gap-4 flex flex-col items-start justify-start" onSubmit={(e) => handleSubmit(onSubmit)(e)}>
         <div className="w-full h-auto">
-          <p className="text-left text-[22px] text-black">Login Page</p>
+          <p className="text-left text-[22px] text-black">Welcome to Forum App</p>
         </div>
 
         <div className="w-full h-auto flex flex-col items-start justify-start gap-2">
@@ -112,6 +115,7 @@ function Login() {
 
         <div className="w-full h-auto flex flex-col items-start justify-start gap-0.5">
           <ReCAPTCHA
+            ref={recaptchaRef}
             sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
             onChange={handleCaptchaChange}
           />
