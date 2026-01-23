@@ -9,6 +9,8 @@ import { registerAction } from '../api/user.api'
 
 type RegisterForm = {
   username: string
+  email: string
+  phoneNumber: string
   fullname: string
   password: string
 }
@@ -31,7 +33,7 @@ function Register() {
     try {
       if (!captchaToken) return
 
-      await registerAction(data.username, data.fullname, data.password)
+      await registerAction(data.username, data.fullname, data.password, captchaToken)
 
       navigate('/login')
     } catch (error) {
@@ -40,7 +42,7 @@ function Register() {
   }
 
   return (
-    <div className="w-full h-full min-h-screen pt-50 flex flex-col items-center justify-start bg-linear-to-t from-sky-500 to-indigo-500 p-6.25">
+    <div className="w-full h-full min-h-screen py-30 flex flex-col items-center justify-start bg-linear-to-t from-sky-500 to-indigo-500 p-6.25">
       <form className="w-full h-auto p-4 max-w-150 bg-white rounded-xl shadow-lg border border-gray-200 gap-4 flex flex-col items-start justify-start" onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full h-auto">
           <p className="text-left text-[22px] text-black">Register Page</p>
@@ -54,6 +56,7 @@ function Register() {
               className="w-full h-auto px-4 py-2 rounded-lg cursor-text border-2 border-gray-300 text-left text-[12px] outline-none"
               placeholder="Username"
               type="text"
+              autoFocus
               {...register('username', {
                 required: 'Username is required',
                 maxLength: {
@@ -67,6 +70,46 @@ function Register() {
               })}
             />
             {errors.username && <p className="text-left text-[12px] text-red-500">{errors.username.message}</p>}
+          </div>
+        </div>
+
+        <div className="w-full h-auto flex flex-col items-start justify-start gap-2">
+          <label htmlFor="email" className="text-left text-[14px] font-semibold">Email <span className="text-red-500">*</span></label>
+          <div className="w-full h-auto flex flex-col items-start justify-start gap-0.5">
+            <input
+              id="email"
+              className="w-full h-auto px-4 py-2 rounded-lg cursor-text border-2 border-gray-300 text-left text-[12px] outline-none"
+              placeholder="Email"
+              type="email"
+              {...register('email', {
+                required: 'Email is required',
+                pattern: {
+                  value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
+                  message: 'Email is invalid'
+                }
+              })}
+            />
+            {errors.email && <p className="text-left text-[12px] text-red-500">{errors.email.message}</p>}  
+          </div>
+        </div>
+
+        <div className="w-full h-auto flex flex-col items-start justify-start gap-2">
+          <label htmlFor="phoneNumber" className="text-left text-[14px] font-semibold">Phone Number <span className="text-red-500">*</span></label>
+          <div className="w-full h-auto flex flex-col items-start justify-start gap-0.5">
+            <input
+              id="phoneNumber"
+              className="w-full h-auto px-4 py-2 rounded-lg cursor-text border-2 border-gray-300 text-left text-[12px] outline-none"
+              placeholder="Phone Number"
+              type="text"
+              {...register('phoneNumber', {
+                required: 'Phone Number is required',
+                pattern: {
+                  value: /^(?:\+62|62|0)8[1-9][0-9]{6,10}$/,
+                  message: 'Phone Number is invalid'
+                }
+              })}
+            />
+            {errors.phoneNumber && <p className="text-left text-[12px] text-red-500">{errors.phoneNumber.message}</p>}  
           </div>
         </div>
 
@@ -92,7 +135,7 @@ function Register() {
             <div className="w-full h-auto flex items-center justify-between rounded-lg border-2 border-gray-300 overflow-hidden px-4">
               <input
                 id='password'
-                className="w-full h-auto py-2 cursor-text text-left text-[14px] outline-none"
+                className="w-full h-auto py-2 cursor-text text-left text-[12px] outline-none"
                 placeholder="Password"
                 type={isPasswordVisible ? 'text' : 'password'}
                 {...register('password', {

@@ -43,7 +43,7 @@ function Login() {
   }
 
   return (
-    <div className="w-full h-full min-h-screen pt-50 flex flex-col items-center justify-start bg-linear-to-t from-sky-500 to-indigo-500 p-6.25">
+    <div className="w-full h-full min-h-screen py-30 flex flex-col items-center justify-start bg-linear-to-t from-sky-500 to-indigo-500 p-6.25">
       <form className="w-full h-auto p-4 max-w-150 bg-white rounded-xl shadow-lg border border-gray-200 gap-4 flex flex-col items-start justify-start" onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full h-auto">
           <p className="text-left text-[22px] text-black">Login Page</p>
@@ -57,6 +57,7 @@ function Login() {
               className="w-full h-auto px-4 py-2 rounded-lg cursor-text border-2 border-gray-300 text-left text-[12px] outline-none"
               placeholder="Username"
               type="text"
+              autoFocus
               {...register('username', {
                 required: 'Username is required',
                 maxLength: {
@@ -79,7 +80,7 @@ function Login() {
             <div className="w-full h-auto flex items-center justify-between rounded-lg border-2 border-gray-300 overflow-hidden px-4">
               <input
                 id='password'
-                className="w-full h-auto py-2 cursor-text text-left text-[14px] outline-none"
+                className="w-full h-auto py-2 cursor-text text-left text-[12px] outline-none"
                 placeholder="Password"
                 type={isPasswordVisible ? 'text' : 'password'}
                 {...register('password', {
