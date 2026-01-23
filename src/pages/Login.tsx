@@ -31,7 +31,7 @@ function Login() {
     try {
       if (!captchaToken) return
 
-      const response = await loginAction(data.username, data.password)
+      const response = await loginAction(data.username, data.password, captchaToken)
 
       setSecureItem('accessToken', response.data.accessToken)
       setSecureItem('refreshToken', response.data.refreshToken)

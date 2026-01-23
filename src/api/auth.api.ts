@@ -1,13 +1,13 @@
-import { http } from './http'
+import { publicApi, privateApi } from './http'
 
-export const loginAction = (username: string, password: string) => {
-  return http.post('/authentications/login-account', { username, password });
+export const loginAction = (username: string, password: string, captchaToken: string) => {
+  return publicApi.post('/authentications/login-account', { username, password, captchaToken });
 }
 
 export const refreshTokenAction = (refreshToken: string) => {
-  return http.post('/authentications/refresh-authentication', { refreshToken });
+  return publicApi.post('/authentications/refresh-authentication', { refreshToken });
 }
 
 export const logoutAction = () => {
-  return http.post('/authentications/logout-account');
+  return privateApi.post('/authentications/logout-account');
 }

@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form'
 import ReCAPTCHA from 'react-google-recaptcha'
 import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { setSecureItem } from '../utils/secureStorage.utils'
 import { registerAction } from '../api/user.api'
 
 type RegisterForm = {
