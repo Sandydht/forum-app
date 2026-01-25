@@ -22,7 +22,7 @@ export const privateApi = axios.create({
   }
 })
 
-privateApi.interceptors.request.use(config => {
+privateApi.interceptors.request.use((config) => {
   const token = getSecureItem('accessToken')
   if (token) config.headers['Authorization'] = `Bearer ${token}`;
   return config

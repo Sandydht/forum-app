@@ -11,3 +11,7 @@ export const refreshTokenAction = (refreshToken: string) => {
 export const logoutAction = () => {
   return privateApi.post('/authentications/logout-account');
 }
+
+export const requestPasswordResetAction = (email: string, captchaToken: string) => {
+  return publicApi.post('/authentications/request-reset-password-link', { email, captchaToken });
+}
