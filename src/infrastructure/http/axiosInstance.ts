@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getSecureItem } from '../../presentation/utils/secureStorage.utils'
+import SecureStorageImpl from '../service/SecureStorageImpl'
 
 export const publicApi = axios.create({
   baseURL: '/api',
@@ -23,7 +23,7 @@ export const privateApi = axios.create({
 })
 
 privateApi.interceptors.request.use((config) => {
-  const token = getSecureItem('accessToken')
+  const token = SecureStorageImpl.getSecureItem('accessToken')
   if (token) config.headers['Authorization'] = `Bearer ${token}`;
   return config
 }, error => {
