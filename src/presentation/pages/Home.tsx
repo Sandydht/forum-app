@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from '../store/hooks'
-import { getUserProfile } from "../store/userSlice"
+import { getUserProfile } from "../store/user/userThunks"
 
 function Home() {
   const dispatch = useAppDispatch()

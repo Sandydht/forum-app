@@ -5,9 +5,10 @@ import { useState, useRef } from "react"
 import Visibility24pxGray300Icon from '../assets/images/svg/visibility_24px_gray_300.svg'
 import VisibilityOff24pxGray300Icon from '../assets/images/svg/visibility_off_24px_gray_300.svg'
 import { Link } from 'react-router-dom'
-import { loginAccount } from '../store/authSlice'
 import { useAppDispatch } from '../store/hooks'
 import type { UserLoginRequestDto } from '../../infrastructure/dto/request/UserLoginRequestDto'
+import { loginAccount } from '../store/auth/authThunks'
+import UserMapper from '../../infrastructure/mappers/UserMapper'
 
 type LoginForm = {
   username: string
@@ -39,7 +40,7 @@ function Login() {
         password: formData.password,
         captchaToken
       }
-      await dispatch(loginAccount(userLoginPayload)).unwrap()
+      await dispatch(loginAccount(UserMapper.toUserLoginDomain(userLoginPayload))).unwrap()
 
       reset()
       recaptchaRef.current?.reset()

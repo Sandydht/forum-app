@@ -6,8 +6,9 @@ import ReCAPTCHA from 'react-google-recaptcha'
 import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { useAppDispatch } from '../store/hooks'
-import { registerUser } from "../store/userSlice"
 import type RegisterUserRequestDto from "../../infrastructure/dto/request/RegisterUserRequestDto"
+import { registerUser } from "../store/user/userThunks"
+import UserMapper from "../../infrastructure/mappers/UserMapper"
 
 type RegisterForm = {
   username: string
@@ -45,7 +46,7 @@ function Register() {
         password: formData.password,
         captchaToken
       }
-      await dispatch(registerUser(registerUserPayload)).unwrap()
+      await dispatch(registerUser(UserMapper.toRegisterUserDomain(registerUserPayload))).unwrap()
 
       reset()
       recaptchaRef.current?.reset()
