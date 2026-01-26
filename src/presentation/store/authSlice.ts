@@ -4,22 +4,26 @@ import LoginAccountUseCase from '../../application/usecases/LoginAccountUseCase'
 import AuthenticationRepositoryImpl from '../../infrastructure/repositories/AuthenticationRepositoryImpl'
 import type { UserLoginResponseDto } from '../../infrastructure/dto/response/UserLoginResponseDto'
 import type { UserLoginRequestDto } from '../../infrastructure/dto/request/UserLoginRequestDto'
-import UserMapper from '../../infrastructure/mappers/UserMapper'
-import AuthMapper from '../../infrastructure/mappers/AuthMapper'
 import SecureStorageImpl from '../../infrastructure/service/SecureStorageImpl'
+import UserLogin from '../../domain/users/entity/UserLogin'
+import type NewAuth from '../../domain/authentications/entity/NewAuth'
 
 export const loginAccount = createAsyncThunk<UserLoginResponseDto, UserLoginRequestDto, { rejectValue: string }>(
   'auth/login-account',
   async (payload: UserLoginRequestDto, { rejectWithValue }) => {
     try {
-      const useCase = new LoginAccountUseCase(new AuthenticationRepositoryImpl())
-      const result = await useCase.execute(UserMapper.toUserLoginDomain(payload))
-      const resultMap = AuthMapper.toUserLoginResponseDto(result)
+      const useCase = new LoginAccountUseCase(
+        new AuthenticationRepositoryImpl(),
+        new SecureStorageImpl()
+      )
 
-      SecureStorageImpl.setSecureItem('accessToken', resultMap.accessToken)
-      SecureStorageImpl.setSecureItem('refreshToken', resultMap.refreshToken)
-
-      return resultMap
+      const userLogin = new UserLogin(payload.username, payload.password, payload.captchaToken)
+      const result: NewAuth = await useCase.execute(userLogin)
+      
+      return {
+        accessToken: result.getAccessToken(),
+        refreshToken: result.getRefreshToken()
+      }
     } catch (error: any) {
       return rejectWithValue(error.message)
     }

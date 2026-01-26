@@ -1,10 +1,8 @@
 import { describe, expect, it, vi } from "vitest"
-import { publicApi } from "../../http/axiosInstance";
-import NewAuth from "../../../domain/authentications/entity/NewAuth";
 import AuthenticationRepositoryImpl from "../AuthenticationRepositoryImpl";
-import type { UserLoginResponseDto } from "../../dto/response/UserLoginResponseDto";
-import type { UserLoginRequestDto } from "../../dto/request/UserLoginRequestDto";
-import UserMapper from "../../mappers/UserMapper";
+import UserLogin from "../../../domain/users/entity/UserLogin";
+import NewAuth from "../../../domain/authentications/entity/NewAuth";
+import { publicApi } from "../../http/axiosInstance";
 
 vi.mock('../../http/axiosInstance', () => ({
   publicApi: {
@@ -16,27 +14,23 @@ describe("AuthenticationRepositoryImpl", () => {
   const authenticationRepositoryImpl = new AuthenticationRepositoryImpl();
 
   describe("loginAccount function", () => {
-    const validPayload: UserLoginRequestDto = {
-      username: "user",
-      password: "password123",
-      captchaToken: "valid-captcha-token"
-    }
-
     it("should login account and return authentication data", async () => {
-      const request = UserMapper.toUserLoginDomain(validPayload)
+      const userLogin = new UserLogin(
+        'user',
+        'password123',
+        'valid-captcha-token'
+      )
 
-      const mockResponse: UserLoginResponseDto = {
-        accessToken: 'access-token',
-        refreshToken: 'refresh-token'
-      }
-      vi.mocked(publicApi.post).mockResolvedValue({ data: mockResponse });
+      const mockNewAuth = new NewAuth(
+        'access-token',
+        'refresh-token'
+      )
+      vi.mocked(publicApi.post).mockResolvedValue({ data: mockNewAuth })
 
-      const response: NewAuth = await authenticationRepositoryImpl.loginAccount(request);
+      const response: NewAuth = await authenticationRepositoryImpl.loginAccount(userLogin)
 
-      expect(publicApi.post).toHaveBeenCalledWith("/authentications/login-account", request);
-      expect(response).toBeInstanceOf(NewAuth);
-      expect(response.getAccessToken()).toStrictEqual(mockResponse.accessToken);
-      expect(response.getRefreshToken()).toStrictEqual(mockResponse.refreshToken);
+      expect(publicApi.post).toHaveBeenCalledWith("/authentications/login-account", userLogin)
+      expect(response).toStrictEqual(mockNewAuth)
     })
   })
 })

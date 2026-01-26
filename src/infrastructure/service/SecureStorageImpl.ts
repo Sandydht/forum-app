@@ -2,9 +2,9 @@ import CryptoJS from "crypto-js";
 import SecureStorage from "../../application/service/SecuredStorage"
 
 class SecureStorageImpl extends SecureStorage {
-  private static readonly SECRET_KEY = import.meta.env.VITE_STORAGE_SECRET;
+  private readonly SECRET_KEY = import.meta.env.VITE_STORAGE_SECRET;
 
-  public static setSecureItem(key: string, value: unknown) {
+  public setSecureItem(key: string, value: unknown) {
     const encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(value),
       this.SECRET_KEY
@@ -13,7 +13,7 @@ class SecureStorageImpl extends SecureStorage {
     localStorage.setItem(key, encrypted);
   }
 
-  public static getSecureItem(key: string): unknown {
+  public getSecureItem(key: string): unknown {
     const encrypted = localStorage.getItem(key);
     if (!encrypted) return null;
 
@@ -27,7 +27,7 @@ class SecureStorageImpl extends SecureStorage {
     }
   }
 
-  public static removeSecureItem(key: string) {
+  public removeSecureItem(key: string) {
     localStorage.removeItem(key);
   }
 }
