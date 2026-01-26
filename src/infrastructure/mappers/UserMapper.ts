@@ -1,9 +1,11 @@
 import RegisteredUser from "../../domain/users/entity/RegisteredUser";
 import RegisterUser from "../../domain/users/entity/RegisterUser";
 import UserLogin from "../../domain/users/entity/UserLogin";
+import UserProfile from "../../domain/users/entity/UserProfile";
 import type RegisterUserRequestDto from "../dto/request/RegisterUserRequestDto";
 import type { UserLoginRequestDto } from "../dto/request/UserLoginRequestDto";
 import type RegisterUserResponseDto from "../dto/response/RegisterUserResponseDto";
+import type { UserProfileResponseDto } from "../dto/response/UserProfileResponseDto";
 
 class UserMapper {
   public static toUserLoginDomain(dto: UserLoginRequestDto): UserLogin {
@@ -44,6 +46,22 @@ class UserMapper {
       email: registeredUser.getEmail(),
       phoneNumber: registeredUser.getPhoneNumber(),
       fullname: registeredUser.getFullname()
+    }
+  }
+
+  public static toUserProfileDomain(dto: UserProfileResponseDto): UserProfile {
+    return new UserProfile(
+      dto.id,
+      dto.username,
+      dto.fullname
+    )
+  }
+
+  public static toUserProfileResponseDto(userProfile: UserProfile): UserProfileResponseDto {
+    return {
+      id: userProfile.getId(),
+      username: userProfile.getUsername(),
+      fullname: userProfile.getFullname()
     }
   }
 }

@@ -45,7 +45,7 @@ function Register() {
         password: formData.password,
         captchaToken
       }
-      await dispatch(registerUser(registerUserPayload))
+      await dispatch(registerUser(registerUserPayload)).unwrap()
 
       reset()
       recaptchaRef.current?.reset()

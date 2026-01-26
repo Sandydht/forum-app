@@ -2,14 +2,19 @@ import { describe, it, expect, vi } from "vitest"
 import UserRepositoryImpl from "../UserRepositoryImpl";
 import RegisterUser from "../../../domain/users/entity/RegisterUser";
 import RegisteredUser from "../../../domain/users/entity/RegisteredUser";
-import { publicApi } from "../../http/axiosInstance";
+import { privateApi, publicApi } from "../../http/axiosInstance";
 import type RegisterUserRequestDto from "../../dto/request/RegisterUserRequestDto";
 import type RegisterUserResponseDto from "../../dto/response/RegisterUserResponseDto";
+import type { UserProfileResponseDto } from "../../dto/response/UserProfileResponseDto";
+import UserProfile from "../../../domain/users/entity/UserProfile";
 
 vi.mock('../../http/axiosInstance', () => ({
   publicApi: {
-    post: vi.fn(),
+    post: vi.fn()
   },
+  privateApi: {
+    get: vi.fn()
+  }
 }));
 
 describe("UserRepositoryImpl", () => {
@@ -48,11 +53,24 @@ describe("UserRepositoryImpl", () => {
 
       expect(publicApi.post).toHaveBeenCalledWith("/users/register-account", request);
       expect(response).toBeInstanceOf(RegisteredUser);
-      expect(response.getId()).toStrictEqual('user-123');
-      expect(response.getUsername()).toStrictEqual(request.getUsername());
-      expect(response.getEmail()).toStrictEqual(request.getEmail());
-      expect(response.getPhoneNumber()).toStrictEqual(request.getPhoneNumber());
-      expect(response.getFullname()).toStrictEqual(request.getFullname());
+      expect(response).toEqual(mockResponse);
+    })
+  })
+
+  describe("getUserProfile function", () => {
+    it("should return UserProfile data correctly", async () => {
+      const mockUserProfileResponse: UserProfileResponseDto = {
+        id: 'user-123',
+        username: 'user',
+        fullname: 'Fullname'
+      }
+      vi.mocked(privateApi.get).mockResolvedValue({ data: mockUserProfileResponse })
+
+      const response: UserProfile = await userRepositoryImpl.getUserProfile();
+
+      expect(privateApi.get).toHaveBeenCalledWith("/users/get-profile");
+      expect(response).toBeInstanceOf(UserProfile);
+      expect(response).toEqual(mockUserProfileResponse);
     })
   })
 })

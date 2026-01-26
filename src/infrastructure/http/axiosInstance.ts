@@ -23,7 +23,8 @@ export const privateApi = axios.create({
 })
 
 privateApi.interceptors.request.use((config) => {
-  const token = SecureStorageImpl.getSecureItem('accessToken')
+  const secureStorage: SecureStorageImpl = new SecureStorageImpl()
+  const token = secureStorage.getSecureItem('accessToken')
   if (token) config.headers['Authorization'] = `Bearer ${token}`;
   return config
 }, error => {

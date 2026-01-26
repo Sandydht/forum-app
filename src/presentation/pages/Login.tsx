@@ -39,7 +39,7 @@ function Login() {
         password: formData.password,
         captchaToken
       }
-      await dispatch(loginAccount(userLoginPayload))
+      await dispatch(loginAccount(userLoginPayload)).unwrap()
 
       reset()
       recaptchaRef.current?.reset()

@@ -8,5 +8,6 @@ describe('UserRepository interface', () => {
 
     expect(userRepository).toBeInstanceOf(UserRepository);
     await expect(userRepository.registerAccount(new RegisterUser("user", "example@email.com", "081234567890", "user", "password123", "valid-captcha-token"))).rejects.toThrowError('USER_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+    await expect(userRepository.getUserProfile()).rejects.toThrowError('USER_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   });
 });
