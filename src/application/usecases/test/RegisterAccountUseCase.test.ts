@@ -3,6 +3,7 @@ import RegisteredUser from "../../../domain/users/entity/RegisteredUser";
 import type UserRepository from "../../../domain/users/UserRepository";
 import RegisterAccountUseCase from "../RegisterAccountUseCase";
 import RegisterUser from "../../../domain/users/entity/RegisterUser";
+import type MethodAssertion from "../../utils/MethodAssertion";
 
 describe("RegisterAccountUseCase", () => {
   it('should orchestrate the register account action correctly', async () => {
@@ -23,10 +24,14 @@ describe("RegisterAccountUseCase", () => {
       'Fullname'
     )
     const mockUserRepository: UserRepository = {
-      registerAccount: vi.fn().mockResolvedValue(mockResponse),
+      registerAccount: vi.fn().mockResolvedValue(mockResponse)
     }
 
-    const registerAccountUseCase = new RegisterAccountUseCase(mockUserRepository)
+    const mockMethodAssertion: MethodAssertion = {
+      assertImplemented: vi.fn()
+    }
+
+    const registerAccountUseCase: RegisterAccountUseCase = new RegisterAccountUseCase(mockUserRepository, mockMethodAssertion)
 
     const result = await registerAccountUseCase.execute(registerUser)
 

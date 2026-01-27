@@ -1,5 +1,5 @@
 import CryptoJS from "crypto-js";
-import SecureStorage from "../../application/service/SecuredStorage"
+import SecureStorage from "../../application/utils/SecuredStorage"
 
 class SecureStorageImpl extends SecureStorage {
   private readonly SECRET_KEY = import.meta.env.VITE_STORAGE_SECRET;

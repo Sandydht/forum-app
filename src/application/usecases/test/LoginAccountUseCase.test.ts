@@ -3,34 +3,38 @@ import NewAuth from "../../../domain/authentications/entity/NewAuth";
 import type AuthenticationRepository from "../../../domain/authentications/AuthenticationRepository";
 import LoginAccountUseCase from "../LoginAccountUseCase";
 import UserLogin from "../../../domain/users/entity/UserLogin";
-import type SecureStorage from "../../service/SecuredStorage";
+import type SecureStorage from "../../utils/SecuredStorage";
+import type MethodAssertion from "../../utils/MethodAssertion";
 
 describe("LoginAccountUseCase", () => {
   it('should orchestrate the register account action correctly', async () => {
-    const userLogin = new UserLogin(
+    const userLogin: UserLogin = new UserLogin(
       'user',
       'password123',
       'valid-captcha-token'
     )
 
-    const mockNewAuth = new NewAuth(
+    const mockNewAuth: NewAuth = new NewAuth(
       'access-token',
       'refresh-token'
     )
 
     const mockAuthenticationRepository: AuthenticationRepository = {
-      loginAccount: vi.fn().mockResolvedValue(mockNewAuth),
+      loginAccount: vi.fn().mockResolvedValue(mockNewAuth)
     }
 
     const mockSecureStorage: SecureStorage = {
-      setSecureItem: vi.fn(),
-      getSecureItem: vi.fn().mockResolvedValue(""),
-      removeSecureItem: vi.fn()
+      setSecureItem: vi.fn()
     }
 
-    const loginAccountUseCase = new LoginAccountUseCase(
+    const mockMethodAssertion: MethodAssertion = {
+      assertImplemented: vi.fn()
+    }
+
+    const loginAccountUseCase: LoginAccountUseCase = new LoginAccountUseCase(
       mockAuthenticationRepository,
-      mockSecureStorage
+      mockSecureStorage,
+      mockMethodAssertion
     )
 
     const result: NewAuth = await loginAccountUseCase.execute(userLogin)

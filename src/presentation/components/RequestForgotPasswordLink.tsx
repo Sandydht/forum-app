@@ -2,6 +2,10 @@ import { useState, useRef } from "react"
 import { useForm } from 'react-hook-form'
 import ReCAPTCHA from 'react-google-recaptcha'
 import { Link } from 'react-router-dom'
+import { useAppDispatch } from '../store/hooks'
+import type { RequestResetPasswordLinkRequestDto } from "../../infrastructure/dto/request/RequestResetPasswordLinkRequestDto"
+import AuthMapper from "../../infrastructure/mappers/AuthMapper"
+import { requestResetPasswordLink } from "../store/auth/authThunks"
 
 type FindAccountForm = {
   email: string
@@ -11,16 +15,21 @@ function RequestForgotPasswordLink() {
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FindAccountForm>()
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const recaptchaRef = useRef<ReCAPTCHA | null>(null)
+  const dispatch = useAppDispatch()
 
   const handleCaptchaChange = (token: string | null) => {
     setCaptchaToken(token)
   }
 
-  const onSubmit = async (data: FindAccountForm) => {
+  const onSubmit = async (formData: FindAccountForm) => {
     try {
       if (!captchaToken) return
-      
-      console.log('data: ', data)
+
+      const requestPayload: RequestResetPasswordLinkRequestDto = {
+        email: formData.email,
+        captchaToken
+      }
+      await dispatch(requestResetPasswordLink(AuthMapper.toRequestResetPasswordLinkDomain(requestPayload))).unwrap()
 
       reset()
       recaptchaRef.current?.reset()
@@ -56,7 +65,7 @@ function RequestForgotPasswordLink() {
                 }
               })}
             />
-            {errors.email && <p className="text-left text-[12px] text-red-500 leading-4">{errors.email.message}</p>}  
+            {errors.email && <p className="text-left text-[12px] text-red-500 leading-4">{errors.email.message}</p>}
           </div>
         </div>
 

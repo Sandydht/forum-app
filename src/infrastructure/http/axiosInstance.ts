@@ -1,5 +1,5 @@
 import axios from 'axios'
-import SecureStorageImpl from '../service/SecureStorageImpl'
+import SecureStorageImpl from '../utils/SecureStorageImpl'
 
 export const publicApi = axios.create({
   baseURL: '/api',

@@ -123,4 +123,36 @@ describe("InputValidation Utils", () => {
       expect(() => InputValidation.phoneNumberValidFormat(validPhoneNumber2, errorMessage)).not.toThrowError();
     });
   });
+
+  describe("validateIpAddress function", () => {
+    const errorMessage = "INVALID_IP_ADDRESS";
+
+    it("should not throw an error when given a valid IPv4", () => {
+      expect(() => InputValidation.validateIpAddress("192.168.1.1", errorMessage)).not.toThrow();
+    })
+
+    it("should not throw an error when given a valid IPv6", () => {
+      expect(() => InputValidation.validateIpAddress("::1", errorMessage)).not.toThrow();
+    })
+
+    it("should not throw an error when given a valid hostname", () => {
+      expect(() => InputValidation.validateIpAddress("example.com", errorMessage)).not.toThrow();
+    })
+
+    it("should not throw an error when given localhost", () => {
+      expect(() => InputValidation.validateIpAddress("localhost", errorMessage)).not.toThrow();
+    })
+
+    it("should throw an error with the provided message when given an invalid host", () => {
+      expect(() => InputValidation.validateIpAddress("999.999.999.999", errorMessage)).toThrowError(errorMessage);
+    })
+
+    it("should throw an error when given a URL instead of a host", () => {
+      expect(() => InputValidation.validateIpAddress("http://localhost", errorMessage)).toThrowError(errorMessage);
+    })
+
+    it("should throw an error when given a host with port", () => {
+      expect(() => InputValidation.validateIpAddress("localhost:3000", errorMessage)).toThrowError(errorMessage);
+    })
+  })
 });
