@@ -2,6 +2,8 @@ import GetUserProfileUseCase from "../application/usecases/GetUserProfileUseCase
 import LoginAccountUseCase from "../application/usecases/LoginAccountUseCase";
 import RegisterAccountUseCase from "../application/usecases/RegisterAccountUseCase";
 import RequestResetPasswordLinkUseCase from "../application/usecases/RequestResetPasswordLinkUseCase";
+import ResendPasswordResetTokenUseCase from "../application/usecases/ResendPasswordResetTokenUseCase";
+import UpdatePasswordUseCase from "../application/usecases/UpdatePasswordUseCase";
 import AuthenticationRepositoryImpl from "./repositories/AuthenticationRepositoryImpl";
 import UserRepositoryImpl from "./repositories/UserRepositoryImpl";
 import MethodAssertionImpl from "./utils/MethodAssertionImpl";
@@ -14,7 +16,9 @@ const methodAssertionImpl: MethodAssertionImpl = new MethodAssertionImpl();
 
 export const authDependencies = {
   loginAccountUseCase: new LoginAccountUseCase(authenticationRepositoryImpl, secureStorageImpl, methodAssertionImpl),
-  requestResetPasswordLinkUseCase: new RequestResetPasswordLinkUseCase(authenticationRepositoryImpl, methodAssertionImpl)
+  requestResetPasswordLinkUseCase: new RequestResetPasswordLinkUseCase(authenticationRepositoryImpl, methodAssertionImpl),
+  resendPasswordResetTokenUseCase: new ResendPasswordResetTokenUseCase(authenticationRepositoryImpl, methodAssertionImpl),
+  updatePasswordUseCase: new UpdatePasswordUseCase(authenticationRepositoryImpl, methodAssertionImpl)
 }
 
 export const userDependencies = {

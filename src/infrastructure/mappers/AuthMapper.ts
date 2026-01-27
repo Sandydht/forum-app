@@ -1,8 +1,16 @@
 import NewAuth from "../../domain/authentications/entity/NewAuth";
+import RequestedNewPasswordResetToken from "../../domain/authentications/entity/RequestedNewPasswordResetToken";
 import RequestedResetPasswordLink from "../../domain/authentications/entity/RequestedResetPasswordLink";
 import RequestResetPasswordLink from "../../domain/authentications/entity/RequestResetPasswordLink";
+import ResendPasswordResetToken from "../../domain/authentications/entity/ResendPasswordResetToken";
+import UpdatedPassword from "../../domain/authentications/entity/UpdatedPassword";
+import type UpdatePassword from "../../domain/authentications/entity/UpdatePassword";
 import type { RequestResetPasswordLinkRequestDto } from "../dto/request/RequestResetPasswordLinkRequestDto";
+import type { ResendPasswordResetTokenRequestDto } from "../dto/request/ResendPasswordResetTokenRequestDto";
+import type { UpdatePasswordRequestDto } from "../dto/request/UpdatePasswordRequestDto";
+import type { RequestedNewPasswordResetTokenResponseDto } from "../dto/response/RequestedNewPasswordResetTokenResponseDto";
 import type { RequestResetPasswordLinkResponseDto } from "../dto/response/RequestResetPasswordLinkResponseDto";
+import type { UpdatedPasswordResponseDto } from "../dto/response/UpdatedPasswordResponseDto";
 import type { UserLoginResponseDto } from "../dto/response/UserLoginResponseDto";
 
 class AuthMapper {
@@ -36,6 +44,43 @@ class AuthMapper {
 
   public static toRequestResetPasswordLinkDomain(dto: RequestResetPasswordLinkRequestDto): RequestResetPasswordLink {
     return new RequestResetPasswordLink(dto.email, dto.captchaToken)
+  }
+
+  public static toResendPasswordResetTokenDomain(dto: ResendPasswordResetTokenRequestDto): ResendPasswordResetToken {
+    return new ResendPasswordResetToken(dto.token)
+  }
+
+  public static toRequestedNewPasswordResetTokenResponseDto(domain: RequestedNewPasswordResetToken): RequestedNewPasswordResetTokenResponseDto {
+    return {
+      message: domain.getMessage()
+    }
+  }
+
+  public static toRequestedNewPasswordResetTokenDomain(dto: RequestedNewPasswordResetTokenResponseDto): RequestedNewPasswordResetToken {
+    return new RequestedNewPasswordResetToken(dto.message)
+  }
+
+  public static toResendPasswordResetTokenRequestDto(domain: ResendPasswordResetToken): ResendPasswordResetTokenRequestDto {
+    return {
+      token: domain.getToken()
+    }
+  }
+
+  public static toUpdatePasswordRequestDto(domain: UpdatePassword): UpdatePasswordRequestDto {
+    return {
+      newPassword: domain.getNewPassword(),
+      token: domain.getToken()
+    }
+  }
+
+  public static toUpdatedPasswordDomain(dto: UpdatedPasswordResponseDto): UpdatedPassword {
+    return new UpdatedPassword(dto.message)
+  }
+
+  public static toUpdatedPasswordResponseDto(domain: UpdatedPassword): UpdatedPasswordResponseDto {
+    return {
+      message: domain.getMessage()
+    }
   }
 }
 

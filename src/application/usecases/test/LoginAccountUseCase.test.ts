@@ -39,6 +39,8 @@ describe("LoginAccountUseCase", () => {
 
     const result: NewAuth = await loginAccountUseCase.execute(userLogin)
 
+    expect(mockMethodAssertion.assertImplemented).toHaveBeenCalledWith(mockAuthenticationRepository, 'loginAccount', 'AUTHENTICATION_REPOSITORY.METHOD_NOT_IMPLEMENTED')
+    expect(mockMethodAssertion.assertImplemented).toHaveBeenCalledWith(mockSecureStorage, 'setSecureItem', 'SECURE_STORAGE.METHOD_NOT_IMPLEMENTED')
     expect(mockAuthenticationRepository.loginAccount).toHaveBeenCalledWith(userLogin)
     expect(mockSecureStorage.setSecureItem).toHaveBeenCalledWith("accessToken", mockNewAuth.getAccessToken())
     expect(mockSecureStorage.setSecureItem).toHaveBeenCalledWith("refreshToken", mockNewAuth.getRefreshToken())

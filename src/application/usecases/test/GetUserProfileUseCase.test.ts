@@ -23,6 +23,7 @@ describe("GetUserProfileUseCase", () => {
 
     const result: UserProfile = await getUserProfileUseCase.execute()
 
+    expect(mockMethodAssertion.assertImplemented).toHaveBeenCalledWith(mockUserRepository, 'getUserProfile', 'USER_REPOSITORY.METHOD_NOT_IMPLEMENTED')
     expect(mockUserRepository.getUserProfile).toHaveBeenCalled()
     expect(result).toStrictEqual(mockUserProfile)
   })

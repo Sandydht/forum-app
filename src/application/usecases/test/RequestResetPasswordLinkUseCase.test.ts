@@ -10,8 +10,6 @@ describe("RequestResetPasswordLinkUseCase", () => {
     const requestResetPasswordLink = new RequestResetPasswordLink(
       'example@email.com',
       '192.168.1.1',
-      'Google Chrome',
-      'valid-captcha-token'
     )
 
     const mockRequestedResetPasswordLink = new RequestedResetPasswordLink('If the email is registered, we will send password reset instructions')

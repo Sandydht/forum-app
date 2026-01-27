@@ -13,3 +13,15 @@ export const requestResetPasswordLink = createUseCaseThunk(
   () => authDependencies.requestResetPasswordLinkUseCase,
   (result) => AuthMapper.toRequestResetPasswordLinkResponseDto(result)
 )
+
+export const resendPasswordResetToken = createUseCaseThunk(
+  'auth/resend-password-reset-token',
+  () => authDependencies.resendPasswordResetTokenUseCase,
+  (result) => AuthMapper.toRequestedNewPasswordResetTokenResponseDto(result)
+)
+
+export const updatePassword = createUseCaseThunk(
+  'auth/update-password',
+  () => authDependencies.updatePasswordUseCase,
+  (result) => AuthMapper.toUpdatedPasswordResponseDto(result)
+)

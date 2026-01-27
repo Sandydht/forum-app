@@ -35,6 +35,7 @@ describe("RegisterAccountUseCase", () => {
 
     const result = await registerAccountUseCase.execute(registerUser)
 
+    expect(mockMethodAssertion.assertImplemented).toHaveBeenCalledWith(mockUserRepository, 'registerAccount', 'USER_REPOSITORY.METHOD_NOT_IMPLEMENTED')
     expect(mockUserRepository.registerAccount).toHaveBeenCalledWith(registerUser)
     expect(result).toStrictEqual(mockResponse)
   })
