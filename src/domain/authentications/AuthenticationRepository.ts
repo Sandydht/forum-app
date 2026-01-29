@@ -7,6 +7,7 @@ import type RequestResetPasswordLink from "./entity/RequestResetPasswordLink";
 import type ResendPasswordResetToken from "./entity/ResendPasswordResetToken";
 import type UpdatedPassword from "./entity/UpdatedPassword";
 import type UpdatePassword from "./entity/UpdatePassword";
+import type ValidatePasswordResetToken from "./entity/ValidatePasswordResetToken";
 
 class AuthenticationRepository {
   public async loginAccount?(_payload: UserLogin): Promise<NewAuth> {
@@ -22,6 +23,10 @@ class AuthenticationRepository {
   }
 
   public async updatePassword?(_payload: UpdatePassword): Promise<UpdatedPassword> {
+    throw new Error("AUTHENTICATION_REPOSITORY.METHOD_NOT_IMPLEMENTED");
+  }
+
+  public async validatePasswordResetToken?(_payload: ValidatePasswordResetToken): Promise<void> {
     throw new Error("AUTHENTICATION_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   }
 }

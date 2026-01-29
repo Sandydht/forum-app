@@ -9,6 +9,7 @@ import ResendPasswordResetToken from "../../../domain/authentications/entity/Res
 import RequestedNewPasswordResetToken from "../../../domain/authentications/entity/RequestedNewPasswordResetToken";
 import UpdatePassword from "../../../domain/authentications/entity/UpdatePassword";
 import UpdatedPassword from "../../../domain/authentications/entity/UpdatedPassword";
+import ValidatePasswordResetToken from "../../../domain/authentications/entity/ValidatePasswordResetToken";
 
 vi.mock('../../http/axiosInstance', () => ({
   publicApi: {
@@ -86,6 +87,18 @@ describe("AuthenticationRepositoryImpl", () => {
       expect(publicApi.post).toHaveBeenCalledWith("/authentications/update-password", updatePassword)
       expect(response).toBeInstanceOf(UpdatedPassword)
       expect(response).toStrictEqual(mockUpdatedPassword)
+    })
+  })
+
+  describe("validatePasswordResetToken function", () => {
+    it("should validate password reset token and return message correctly", async () => {
+      const validatePasswordResetToken: ValidatePasswordResetToken = new ValidatePasswordResetToken('valid-token')
+
+      vi.mocked(publicApi.post)
+
+      await authenticationRepositoryImpl.validatePasswordResetToken(validatePasswordResetToken)
+
+      expect(publicApi.post).toHaveBeenCalledWith("/authentications/validate-password-reset-token", validatePasswordResetToken)
     })
   })
 })

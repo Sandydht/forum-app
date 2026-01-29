@@ -18,7 +18,7 @@ export function useResendCooldown(intervalSeconds: number) {
   const [secondsLeft, setSecondsLeft] = useState(() => getRemaining(Date.now()));
 
   useEffect(() => {
-    if (secondsLeft <= 0) return;
+    if (secondsLeft <= 0) secureStorageImpl.removeSecureItem(STORAGE_KEY);
 
     const timer = setInterval(() => {
       setSecondsLeft(getRemaining(Date.now()));

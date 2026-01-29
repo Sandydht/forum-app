@@ -19,6 +19,8 @@ import type UpdatePassword from "../../domain/authentications/entity/UpdatePassw
 import type UpdatedPassword from "../../domain/authentications/entity/UpdatedPassword";
 import type { UpdatedPasswordResponseDto } from "../dto/response/UpdatedPasswordResponseDto";
 import type { UpdatePasswordRequestDto } from "../dto/request/UpdatePasswordRequestDto";
+import type { ValidatePasswordResetTokenRequest } from "../dto/request/ValidatePasswordResetTokenRequestDto";
+import type ValidatePasswordResetToken from "../../domain/authentications/entity/ValidatePasswordResetToken";
 
 class AuthenticationRepositoryImpl extends AuthenticationRepository {
   public async loginAccount(payload: UserLogin): Promise<NewAuth> {
@@ -59,6 +61,14 @@ class AuthenticationRepositoryImpl extends AuthenticationRepository {
     >('/authentications/update-password', AuthMapper.toUpdatePasswordRequestDto(payload));
     
     return AuthMapper.toUpdatedPasswordDomain(data)
+  }
+
+  public async validatePasswordResetToken(payload: ValidatePasswordResetToken): Promise<void> {
+    await publicApi.post<
+      unknown,
+      AxiosResponse<unknown>,
+      ValidatePasswordResetTokenRequest
+    >('/authentications/validate-password-reset-token', AuthMapper.toValidatePasswordResetTokenRequestDto(payload));
   }
 }
 

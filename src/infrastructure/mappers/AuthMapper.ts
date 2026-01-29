@@ -5,9 +5,11 @@ import RequestResetPasswordLink from "../../domain/authentications/entity/Reques
 import ResendPasswordResetToken from "../../domain/authentications/entity/ResendPasswordResetToken";
 import UpdatedPassword from "../../domain/authentications/entity/UpdatedPassword";
 import UpdatePassword from "../../domain/authentications/entity/UpdatePassword";
+import ValidatePasswordResetToken from "../../domain/authentications/entity/ValidatePasswordResetToken";
 import type { RequestResetPasswordLinkRequestDto } from "../dto/request/RequestResetPasswordLinkRequestDto";
 import type { ResendPasswordResetTokenRequestDto } from "../dto/request/ResendPasswordResetTokenRequestDto";
 import type { UpdatePasswordRequestDto } from "../dto/request/UpdatePasswordRequestDto";
+import type { ValidatePasswordResetTokenRequest } from "../dto/request/ValidatePasswordResetTokenRequestDto";
 import type { RequestedNewPasswordResetTokenResponseDto } from "../dto/response/RequestedNewPasswordResetTokenResponseDto";
 import type { RequestResetPasswordLinkResponseDto } from "../dto/response/RequestResetPasswordLinkResponseDto";
 import type { UpdatedPasswordResponseDto } from "../dto/response/UpdatedPasswordResponseDto";
@@ -85,6 +87,16 @@ class AuthMapper {
 
   public static toUpdatePasswordDomain(dto: UpdatePasswordRequestDto): UpdatePassword {
     return new UpdatePassword(dto.newPassword, dto.token)
+  }
+
+  public static toValidatePasswordResetTokenRequestDto(domain: ValidatePasswordResetToken): ValidatePasswordResetTokenRequest {
+    return {
+      token: domain.getToken()
+    }
+  }
+
+  public static toValidatePasswordResetTokenDomain(dto: ValidatePasswordResetTokenRequest): ValidatePasswordResetToken {
+    return new ValidatePasswordResetToken(dto.token)
   }
 }
 

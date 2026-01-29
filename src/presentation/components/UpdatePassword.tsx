@@ -19,7 +19,7 @@ type UpdatePasswordForm = {
 
 const RESEND_INTERVAL = 60;
 
-function UpdatePassword() {
+function UpdatePassword({ invalidToken }: { invalidToken: boolean }) {
   const [isNewPasswordVisible, setIsNewPasswordVisible] = useState<boolean>(false)
   const [isReTypePasswordVisible, setIsReTypePasswordVisible] = useState<boolean>(false)
   const { register, handleSubmit, formState: { errors }, watch } = useForm<UpdatePasswordForm>()
@@ -154,7 +154,10 @@ function UpdatePassword() {
         <div className="w-full h-auto flex flex-col items-start justify-start gap-2.5">
           <button
             type="submit"
-            className="w-full h-auto font-bold py-2 px-4 rounded-lg text-center text-[14px] leading-5 cursor-pointer bg-blue-500 hover:bg-blue-600 text-white"
+            className={`w-full h-auto font-bold py-2 px-4 rounded-lg text-center text-[14px] leading-5 text-white ${invalidToken ? 
+              'bg-gray-500 cursor-not-allowed' : 
+              'bg-blue-500 hover:bg-blue-600 cursor-pointer'}`}
+            disabled={invalidToken}
           >
             Submit
           </button>

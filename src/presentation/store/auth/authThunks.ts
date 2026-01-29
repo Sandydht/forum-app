@@ -25,3 +25,9 @@ export const updatePassword = createUseCaseThunk(
   () => authDependencies.updatePasswordUseCase,
   (result) => AuthMapper.toUpdatedPasswordResponseDto(result)
 )
+
+export const validatePasswordResetToken = createUseCaseThunk(
+  'auth/validate-password-reset-token',
+  () => authDependencies.validatePasswordResetTokenUseCase,
+  (result) => result
+)
