@@ -7,25 +7,33 @@ import ArrowBack24pxBlackIcon from "../assets/images/svg/arrow_back_24px_black.s
 import { useSearchParams } from "react-router-dom";
 import type { ResendPasswordResetTokenRequestDto } from "../../infrastructure/dto/request/ResendPasswordResetTokenRequestDto"
 import { useAppDispatch } from '../store/hooks'
-import { resendPasswordResetToken } from "../store/auth/authThunks"
+import { resendPasswordResetToken, updatePassword } from "../store/auth/authThunks"
 import AuthMapper from "../../infrastructure/mappers/AuthMapper"
+import type { UpdatePasswordRequestDto } from "../../infrastructure/dto/request/UpdatePasswordRequestDto"
+import { useResendCooldown } from "../hooks/useResendCooldown"
 
 type UpdatePasswordForm = {
   newPassword: string
   retypeNewPassword: string
 }
 
+const RESEND_INTERVAL = 60;
+
 function UpdatePassword() {
   const [isNewPasswordVisible, setIsNewPasswordVisible] = useState<boolean>(false)
   const [isReTypePasswordVisible, setIsReTypePasswordVisible] = useState<boolean>(false)
-  const { register, handleSubmit, formState: { errors } } = useForm<UpdatePasswordForm>()
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");
+  const { register, handleSubmit, formState: { errors }, watch } = useForm<UpdatePasswordForm>()
+  const [searchParams] = useSearchParams()
+  const token = searchParams.get("token")
   const dispatch = useAppDispatch()
+  const newPassword = watch('newPassword')
+  const { secondsLeft, isDisabled, start } = useResendCooldown(RESEND_INTERVAL)
+  const [isLoadingResendPasswordResetToken, setIsLoadingResendPasswordResetToken] = useState<boolean>(false)
 
   const handleToggleNewPasswordVisibility = () => {
     setIsNewPasswordVisible(!isNewPasswordVisible)
   }
+
   const handleToggleReTypePasswordVisibility = () => {
     setIsReTypePasswordVisible(!isReTypePasswordVisible)
   }
@@ -34,8 +42,11 @@ function UpdatePassword() {
     try {
       if (!token) return
 
-      
-      console.log('Update password to:', formData, token)
+      const payload: UpdatePasswordRequestDto = {
+        newPassword: formData.newPassword,
+        token
+      }
+      await dispatch(updatePassword(AuthMapper.toUpdatePasswordDomain(payload)))
     } catch (error) {
       console.error('Update password failed:', error)
     }
@@ -43,15 +54,16 @@ function UpdatePassword() {
 
   const handleResendPasswordResetToken = async () => {
     try {
+      setIsLoadingResendPasswordResetToken(true)
       if (!token) return
 
-      const payload: ResendPasswordResetTokenRequestDto = {
-        token
-      }
-
+      const payload: ResendPasswordResetTokenRequestDto = { token }
       await dispatch(resendPasswordResetToken(AuthMapper.toResendPasswordResetTokenDomain(payload))).unwrap()
+      start()
     } catch (error) {
       console.error('Resend password reset token failed:', error)
+    } finally {
+      setIsLoadingResendPasswordResetToken(false)
     }
   }
 
@@ -60,7 +72,7 @@ function UpdatePassword() {
       <form className="w-full h-auto p-4 max-w-150 bg-white rounded-xl shadow-lg border border-gray-200 gap-4 flex flex-col items-start justify-start" onSubmit={(e) => handleSubmit(onSubmit)(e)}>
         <div className="w-full h-auto flex items-center justify-start gap-2">
           <Link to="/login" className="text-blue-500 hover:underline text-[14px] leading-5">
-            <img 
+            <img
               src={ArrowBack24pxBlackIcon}
               alt="Arrow back icon"
               className="w-full h-full min-w-6 max-w-6 min-h-6 max-h-6"
@@ -117,13 +129,9 @@ function UpdatePassword() {
                 type={isReTypePasswordVisible ? 'text' : 'password'}
                 {...register('retypeNewPassword', {
                   required: 'Re-type Password is required',
-                  minLength: {
-                    value: 8,
-                    message: "Re-type Password must be at least 8 characters"
-                  },
                   validate: {
-                    hasLetterAndNumber: (value) => /[A-Za-z]/.test(value) && /\d/.test(value) || "Re-type Password must contain both letters and numbers",
-                    noSpaces: (value) => !/\s/.test(value) || "Re-type Password must not contain space",
+                    sameAsNewPassword: (value) =>
+                      value === newPassword || "Password do not match"
                   },
                 })}
               />
@@ -153,10 +161,13 @@ function UpdatePassword() {
 
           <button
             type="button"
-            className="w-full h-auto font-bold py-2 px-4 rounded-lg text-center text-[14px] leading-5 cursor-pointer text-blue-500 border-2 border-blue-500 hover:border-blue-600 hover:text-blue-600"
+            className={`w-full h-auto font-bold py-2 px-4 rounded-lg text-center text-[14px] leading-5 ${isLoadingResendPasswordResetToken || isDisabled ? 
+              'text-gray-500 border-2 border-gray-500 hover:border-gray-600 hover:text-gray-600 cursor-not-allowed' : 
+              'cursor-pointer text-blue-500 border-2 border-blue-500 hover:border-blue-600 hover:text-blue-600'}`}
+            disabled={isLoadingResendPasswordResetToken || isDisabled}
             onClick={handleResendPasswordResetToken}
           >
-            Resend Verification Token
+            {isDisabled ? `Resend in ${secondsLeft}s` : "Resend Verification Token"}
           </button>
         </div>
       </form>
